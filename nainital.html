@@ -125,7 +125,7 @@
       <div class="flex justify-between items-center h-20">
         
         <div class="flex-shrink-0 flex items-center">
-          <a href="/" class="group flex items-center gap-2.5">
+          <a href="./index.html" class="group flex items-center gap-2.5">
             <img src="./public/TCG%20logo.webp" width="42" height="42" alt="Top Cute Girls Logo" class="shrink-0 object-contain" />
             <div class="flex flex-col items-start gap-0">
               <span class="font-serif text-xl sm:text-2xl font-bold tracking-wider text-luxury-gold hover:opacity-90 transition-opacity whitespace-nowrap">TOP CUTE GIRLS</span>
@@ -136,23 +136,45 @@
         
         <!-- Desktop Nav -->
         <nav class="hidden md:flex space-x-6 lg:space-x-8 items-center">
-          <a href="/" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
+          <a href="./index.html" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
             Home <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="/#main-about" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
+          <a href="./index.html#main-about" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
             About <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="/#main-services" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
+          <a href="./index.html#main-services" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
             Services <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
           </a>
-          <a href="/#main-categories" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
+          <a href="./index.html#main-categories" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
             Categories <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
           </a>
           <a href="#profiles" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-luxury-gold">
             Nainital Roster <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-full transition-all duration-300"></span>
           </a>
+
+          <!-- DESKTOP LOCATIONS DROPDOWN -->
+          <div class="relative group py-2">
+            <button class="font-sans text-sm font-medium transition-colors duration-200 text-white/85 group-hover:text-luxury-gold flex items-center gap-1 focus:outline-none" aria-label="Locations Menu">
+              Locations <i data-lucide="chevron-down" class="w-3 h-3 transition-transform group-hover:rotate-180"></i>
+              <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
+            </button>
+            <div class="absolute left-0 mt-2 w-44 bg-[#0a0d14]/95 backdrop-blur-md border border-luxury-gold/20 rounded-xl shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 flex flex-col py-3 z-50 transform origin-top scale-95 group-hover:scale-100">
+              <a href="./dehradun.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Dehradun</a>
+              <a href="./mussoorie.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Mussoorie</a>
+              <a href="./haldwani.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Haldwani</a>
+              <a href="./rishikesh.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Rishikesh</a>
+              <a href="./nainital.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Nainital</a>
+              <a href="./ramnagar.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Ramnagar</a>
+              <a href="./rudrapur.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Rudrapur</a>
+              <a href="./bhimtal.html" class="block px-5 py-2 text-xs font-medium text-zinc-300 hover:text-luxury-gold hover:bg-white/5 transition-colors">Bhimtal</a>
+            </div>
+          </div>
+
           <a href="#faq" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
             FAQ <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
+          </a>
+          <a href="./index.html#main-contact" class="font-sans text-sm font-medium transition-colors duration-200 relative group py-2 text-white/85 hover:text-luxury-gold">
+            Contact <span class="absolute bottom-0 left-0 h-[2px] bg-luxury-gold w-0 group-hover:w-full transition-all duration-300"></span>
           </a>
         </nav>
         
@@ -164,7 +186,7 @@
         </div>
         
         <div class="flex md:hidden">
-          <button id="mobile-menu-btn" aria-label="Menu" class="text-white hover:text-luxury-gold p-2 cursor-pointer">
+          <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="text-white hover:text-luxury-gold p-2 cursor-pointer">
             <i id="menu-icon" data-lucide="menu" class="w-6 h-6"></i>
           </button>
         </div>
@@ -174,10 +196,31 @@
     <!-- Mobile Menu Dropdown -->
     <div id="mobile-menu" class="md:hidden fixed top-20 left-0 w-full bg-[#0a0d14]/95 border-b border-luxury-gold/30 shadow-2xl backdrop-blur-lg transition-all duration-300 overflow-y-auto max-h-0 opacity-0 pointer-events-none">
       <div class="px-4 space-y-4">
-        <a href="/" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold">Home</a>
-        <a href="/#main-about" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold">About</a>
-        <a href="#profiles" class="block px-4 py-3 rounded-lg text-base font-medium text-luxury-gold border-l-2 border-luxury-gold">Nainital Roster</a>
-        <a href="#faq" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold">FAQ</a>
+        <a href="./index.html" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">Home</a>
+        <a href="./index.html#main-about" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">About</a>
+        <a href="./index.html#main-services" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">Services</a>
+        <a href="./index.html#main-categories" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">Categories</a>
+        <a href="#profiles" class="block px-4 py-3 rounded-lg text-base font-medium text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-luxury-gold">Nainital Roster</a>
+        
+        <!-- MOBILE LOCATIONS MENU -->
+        <div class="block px-4 py-2">
+          <div class="text-base font-medium text-zinc-200 flex items-center gap-2 mb-2">
+            <i data-lucide="map-pin" class="w-4 h-4 text-luxury-gold"></i> Locations
+          </div>
+          <div class="flex flex-col ml-2 pl-4 border-l border-luxury-gold/30 space-y-1">
+            <a href="./dehradun.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Dehradun</a>
+            <a href="./mussoorie.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Mussoorie</a>
+            <a href="./haldwani.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Haldwani</a>
+            <a href="./rishikesh.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Rishikesh</a>
+            <a href="./nainital.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Nainital</a>
+            <a href="./ramnagar.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Ramnagar</a>
+            <a href="./rudrapur.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Rudrapur</a>
+            <a href="./bhimtal.html" class="block py-1.5 text-sm font-medium text-zinc-400 hover:text-luxury-gold transition-colors">Bhimtal</a>
+          </div>
+        </div>
+
+        <a href="#faq" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">FAQ</a>
+        <a href="./index.html#main-contact" class="block px-4 py-3 rounded-lg text-base font-medium text-zinc-350 hover:text-luxury-gold hover:bg-[#141925]/55 transition-all duration-200 border-l-2 border-transparent hover:border-luxury-gold">Contact</a>
         <div class="pt-4 px-4 pb-6">
           <a href="tel:000000000" class="flex items-center justify-center gap-2 w-full bg-luxury-gold font-sans text-xs font-black tracking-widest uppercase text-white py-3 px-6 rounded-full shadow-lg">
             <i data-lucide="phone" class="w-5 h-5 fill-white text-white"></i>
