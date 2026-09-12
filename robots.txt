@@ -1,6 +1,6 @@
 # ==========================================
 # robots.txt for Top Cute Girls
-# Website: https://topcutegirls.org/
+# Website: https://www.topcutegirls.org/
 # Updated: 2026-09-12
 # Purpose: Maximum Google SEO Crawlability & AI Search Optimization
 # ==========================================
@@ -87,5 +87,5 @@ Allow: /
 # ------------------------------------------
 # 4. XML Sitemap & AI Knowledge Context Directives
 # ------------------------------------------
-Sitemap: https://topcutegirls.org/sitemap.xml
-# LLM Knowledge Reference: https://topcutegirls.org/llms.txt
+Sitemap: https://www.topcutegirls.org/sitemap.xml
+# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt
