@@ -117,6 +117,15 @@
     ]
   }
   </script>
+
+  <style>
+    /* Prevent text selection and copying */
+    body {
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
+  </style>
 </head>
 <body class="selection:bg-luxury-gold selection:text-white font-sans flex flex-col w-full overflow-x-hidden min-h-screen m-0">
 
@@ -1111,9 +1120,16 @@
 
       <div class="pt-10 flex flex-col sm:flex-row items-center justify-between gap-4 font-sans text-xs text-zinc-400">
         <p>© 2026 Top Cute Girls Rishikesh agency. All rights reserved.</p>
-        <div class="flex items-center gap-1">
-          <span>Built for exclusive hotel tours in Uttarakhand</span>
-          <i data-lucide="heart" class="w-3.5 h-3.5 text-luxury-gold fill-luxury-gold"></i>
+        <div class="flex flex-col sm:flex-row items-center gap-4">
+          <!-- DMCA Badge -->
+          <a href="#" class="group flex items-center justify-center gap-2 border border-zinc-700 hover:border-luxury-gold bg-zinc-900 px-3 py-1.5 rounded-md transition-all duration-300">
+            <svg class="w-4 h-4 text-zinc-400 group-hover:text-luxury-gold transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
+            <span class="text-[10px] font-bold text-zinc-300 group-hover:text-white transition-colors uppercase tracking-widest">DMCA Protected</span>
+          </a>
+          <div class="flex items-center gap-1">
+            <span>Built for exclusive hotel tours in Uttarakhand</span>
+            <i data-lucide="heart" class="w-3.5 h-3.5 text-luxury-gold fill-luxury-gold"></i>
+          </div>
         </div>
       </div>
     </div>
@@ -1161,6 +1177,69 @@
         lucide.createIcons();
       });
     });
+  </script>
+
+  <script>
+    // Prevent Right Click
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // Prevent keyboard shortcuts
+    document.addEventListener('keydown', function (event) {
+      // Prevent F12
+      if (event.key === 'F12' || event.keyCode === 123) {
+        event.preventDefault();
+        return false;
+      }
+      // Prevent Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+C, Ctrl+P, Ctrl+S
+      if (event.ctrlKey) {
+        if (event.shiftKey && (event.key === 'I' || event.key === 'J' || event.keyCode === 73 || event.keyCode === 74)) {
+          event.preventDefault();
+          return false;
+        }
+        if (event.key === 'U' || event.keyCode === 85 || 
+            event.key === 'C' || event.keyCode === 67 || 
+            event.key === 'P' || event.keyCode === 80 || 
+            event.key === 'S' || event.keyCode === 83) {
+          event.preventDefault();
+          return false;
+        }
+      }
+      // Mac shortcuts
+      if (event.metaKey) {
+        if (event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.keyCode === 73 || event.keyCode === 74)) {
+           event.preventDefault();
+           return false;
+        }
+        if (event.altKey && (event.key === 'I' || event.keyCode === 73)) {
+           event.preventDefault();
+           return false;
+        }
+        if (event.key === 'U' || event.keyCode === 85 || 
+            event.key === 'C' || event.keyCode === 67 || 
+            event.key === 'P' || event.keyCode === 80 || 
+            event.key === 'S' || event.keyCode === 83) {
+          event.preventDefault();
+          return false;
+        }
+      }
+    });
+
+    // Prevent drag and drop
+    document.addEventListener('dragstart', event => event.preventDefault());
+    
+    // Prevent copy event
+    document.addEventListener('copy', event => {
+      event.preventDefault();
+      if (event.clipboardData) {
+          event.clipboardData.setData('text/plain', '');
+      }
+    });
+    
+    // Prevent cut event
+    document.addEventListener('cut', event => event.preventDefault());
+
+    // Additional mobile prevention
+    document.documentElement.style.webkitTouchCallout = 'none';
   </script>
 </body>
 </html>

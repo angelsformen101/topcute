@@ -1,0 +1,30 @@
+# ==========================================
+# robots.txt for Top Cute Girls
+# ==========================================
+
+# Apply rules to all search engine crawlers (Googlebot, Bingbot, etc.)
+User-agent: *
+
+# Pages to ALLOW (Index these for better SEO ranking)
+Allow: /
+Allow: /escorts
+Allow: /about
+Allow: /services
+Allow: /contact
+Allow: /privacy-policy
+Allow: /terms
+Allow: /disclaimer
+
+# Pages or patterns to DISALLOW (Keep these hidden from search engines)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/
+Disallow: /_vercel/
+
+# Prevents indexing of duplicate content via query parameters (e.g., ?sort=price)
+Disallow: /*?*
+
+# ==========================================
+# XML Sitemap Location
+# ==========================================
+Sitemap: https://topcutegirls.org/sitemap.xml

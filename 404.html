@@ -70,11 +70,83 @@
       opacity: 0.9;
     }
   </style>
+
+  <style>
+    /* Prevent text selection and copying */
+    body {
+      -webkit-user-select: none; /* Safari */
+      -ms-user-select: none; /* IE 10 and IE 11 */
+      user-select: none; /* Standard syntax */
+    }
+  </style>
 </head>
 <body>
   <div class="spinner"></div>
   <h1>Page Not Found</h1>
   <p>Redirecting you to the home page...</p>
   <a href="/" class="home-btn">Go to Homepage</a>
+
+  <script>
+    // Prevent Right Click
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // Prevent keyboard shortcuts
+    document.addEventListener('keydown', function (event) {
+      // Prevent F12
+      if (event.key === 'F12' || event.keyCode === 123) {
+        event.preventDefault();
+        return false;
+      }
+      // Prevent Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+U, Ctrl+C, Ctrl+P, Ctrl+S
+      if (event.ctrlKey) {
+        if (event.shiftKey && (event.key === 'I' || event.key === 'J' || event.keyCode === 73 || event.keyCode === 74)) {
+          event.preventDefault();
+          return false;
+        }
+        if (event.key === 'U' || event.keyCode === 85 || 
+            event.key === 'C' || event.keyCode === 67 || 
+            event.key === 'P' || event.keyCode === 80 || 
+            event.key === 'S' || event.keyCode === 83) {
+          event.preventDefault();
+          return false;
+        }
+      }
+      // Mac shortcuts
+      if (event.metaKey) {
+        if (event.shiftKey && (event.key === 'I' || event.key === 'J' || event.key === 'C' || event.keyCode === 73 || event.keyCode === 74)) {
+           event.preventDefault();
+           return false;
+        }
+        if (event.altKey && (event.key === 'I' || event.keyCode === 73)) {
+           event.preventDefault();
+           return false;
+        }
+        if (event.key === 'U' || event.keyCode === 85 || 
+            event.key === 'C' || event.keyCode === 67 || 
+            event.key === 'P' || event.keyCode === 80 || 
+            event.key === 'S' || event.keyCode === 83) {
+          event.preventDefault();
+          return false;
+        }
+      }
+    });
+
+    // Prevent drag and drop
+    document.addEventListener('dragstart', event => event.preventDefault());
+    
+    // Prevent copy event
+    document.addEventListener('copy', event => {
+      event.preventDefault();
+      if (event.clipboardData) {
+          event.clipboardData.setData('text/plain', '');
+      }
+    });
+    
+    // Prevent cut event
+    document.addEventListener('cut', event => event.preventDefault());
+
+    // Additional mobile prevention
+    document.documentElement.style.webkitTouchCallout = 'none';
+  </script>
 </body>
 </html>
