@@ -1,4 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
+import os
+from datetime import datetime
+
+sitemap_content = """<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
 
@@ -155,3 +158,14 @@
     </image:image>
   </url>
 </urlset>
+"""
+
+paths = [
+    r'c:\Users\Rahul\OneDrive\Documents\top cute\sitemap.xml',
+    r'c:\Users\Rahul\OneDrive\Documents\top cute\public\sitemap.xml'
+]
+
+for path in paths:
+    with open(path, 'w', encoding='utf-8') as f:
+        f.write(sitemap_content)
+    print(f"Fixed {path}")
