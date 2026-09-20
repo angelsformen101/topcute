@@ -1,12 +1,12 @@
 # ==========================================
 # robots.txt for Top Cute Girls
 # Website: https://www.topcutegirls.org/
-# Updated: 2026-09-12
-# Purpose: Maximum Google SEO Crawlability & AI Search Optimization
+# Updated: 2026-09-20
+# Purpose: Maximum SEO Crawlability & Advanced AI/LLM Search Optimization
 # ==========================================
 
 # ------------------------------------------
-# 1. Global Search Engine Crawlers (Googlebot, Bingbot, Yahoo, DuckDuckBot, etc.)
+# 1. Global Search Engine Crawlers 
 # ------------------------------------------
 User-agent: *
 Allow: /
@@ -18,6 +18,11 @@ Allow: /nainital
 Allow: /ramnagar
 Allow: /rudrapur
 Allow: /bhimtal
+Allow: /bangalore
+Allow: /gurgaon
+Allow: /jaipur
+Allow: /noida
+Allow: /pune
 Allow: /public/
 Allow: /*.css$
 Allow: /*.js$
@@ -29,19 +34,17 @@ Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /sitemap.xml
 
-# Disallow administrative, private, and internal framework directories
+# Disallow administrative and duplicate paths
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
 Disallow: /_vercel/
 Disallow: /.vscode/
 Disallow: /.git/
-
-# Prevent indexing duplicate pages created via tracking or sorting query parameters
 Disallow: /*?*
 
 # ------------------------------------------
-# 2. Google-Specific Crawlers (Ensure 100% Mobile & Image Crawl Rendering)
+# 2. Google-Specific Crawlers 
 # ------------------------------------------
 User-agent: Googlebot
 Allow: /
@@ -50,13 +53,13 @@ User-agent: Googlebot-Image
 Allow: /public/
 Allow: /
 
+# ------------------------------------------
+# 3. AI / LLM Semantic Crawlers
+# Explicitly ALLOW to maximize citations in AI Overviews & Generative Search
+# ------------------------------------------
 User-agent: Google-Extended
 Allow: /
 
-# ------------------------------------------
-# 3. AI / LLM Search & Retrieval Crawlers (ChatGPT, SearchGPT, Perplexity, Claude, Apple AI)
-# Explicitly ALLOW to maximize citations in AI Overviews & Generative Search
-# ------------------------------------------
 User-agent: GPTBot
 Allow: /
 
@@ -83,9 +86,10 @@ Allow: /
 
 User-agent: Diffbot
 Allow: /
+Crawl-delay: 2
 
 # ------------------------------------------
 # 4. XML Sitemap & AI Knowledge Context Directives
 # ------------------------------------------
 Sitemap: https://www.topcutegirls.org/sitemap.xml
-# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt
+# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt\n

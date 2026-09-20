@@ -1,30 +1,95 @@
 # ==========================================
 # robots.txt for Top Cute Girls
+# Website: https://www.topcutegirls.org/
+# Updated: 2026-09-20
+# Purpose: Maximum SEO Crawlability & Advanced AI/LLM Search Optimization
 # ==========================================
 
-# Apply rules to all search engine crawlers (Googlebot, Bingbot, etc.)
+# ------------------------------------------
+# 1. Global Search Engine Crawlers 
+# ------------------------------------------
 User-agent: *
-
-# Pages to ALLOW (Index these for better SEO ranking)
 Allow: /
-Allow: /escorts
-Allow: /about
-Allow: /services
-Allow: /contact
-Allow: /privacy-policy
-Allow: /terms
-Allow: /disclaimer
+Allow: /dehradun
+Allow: /mussoorie
+Allow: /rishikesh
+Allow: /haldwani
+Allow: /nainital
+Allow: /ramnagar
+Allow: /rudrapur
+Allow: /bhimtal
+Allow: /bangalore
+Allow: /gurgaon
+Allow: /jaipur
+Allow: /noida
+Allow: /pune
+Allow: /public/
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.webp$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.svg$
+Allow: /llms.txt
+Allow: /llms-full.txt
+Allow: /sitemap.xml
 
-# Pages or patterns to DISALLOW (Keep these hidden from search engines)
+# Disallow administrative and duplicate paths
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
 Disallow: /_vercel/
-
-# Prevents indexing of duplicate content via query parameters (e.g., ?sort=price)
+Disallow: /.vscode/
+Disallow: /.git/
 Disallow: /*?*
 
-# ==========================================
-# XML Sitemap Location
-# ==========================================
-Sitemap: https://topcutegirls.org/sitemap.xml
+# ------------------------------------------
+# 2. Google-Specific Crawlers 
+# ------------------------------------------
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /public/
+Allow: /
+
+# ------------------------------------------
+# 3. AI / LLM Semantic Crawlers
+# Explicitly ALLOW to maximize citations in AI Overviews & Generative Search
+# ------------------------------------------
+User-agent: Google-Extended
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: Diffbot
+Allow: /
+Crawl-delay: 2
+
+# ------------------------------------------
+# 4. XML Sitemap & AI Knowledge Context Directives
+# ------------------------------------------
+Sitemap: https://www.topcutegirls.org/sitemap.xml
+# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt\n
