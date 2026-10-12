@@ -1,7 +1,7 @@
 # ==========================================
 # robots.txt for Top Cute Girls
 # Website: https://www.topcutegirls.org/
-# Updated: 2026-09-20
+# Updated: 2026-10-12
 # Purpose: Maximum SEO Crawlability & Advanced AI/LLM Search Optimization
 # ==========================================
 
@@ -10,6 +10,28 @@
 # ------------------------------------------
 User-agent: *
 Allow: /
+
+# Core Mega Metros & High-Tech Corridors
+Allow: /delhi
+Allow: /mumbai
+Allow: /bangalore
+Allow: /hyderabad
+
+# NCR Commercial Corridors & Satellites
+Allow: /gurgaon
+Allow: /noida
+Allow: /ghaziabad
+Allow: /bulandshahr
+
+# Major Commercial & Regional Powerhouses
+Allow: /pune
+Allow: /ahmedabad
+Allow: /chandigarh
+Allow: /jaipur
+Allow: /lucknow
+Allow: /indore
+
+# Uttarakhand Heritage Markets (Founding Territory)
 Allow: /dehradun
 Allow: /mussoorie
 Allow: /rishikesh
@@ -18,11 +40,19 @@ Allow: /nainital
 Allow: /ramnagar
 Allow: /rudrapur
 Allow: /bhimtal
-Allow: /bangalore
-Allow: /gurgaon
-Allow: /jaipur
-Allow: /noida
-Allow: /pune
+
+# Himachal Pradesh & Mountain Retreats
+Allow: /manali
+Allow: /himachal
+
+# Dehradun Sub-Districts & Micro-Zones
+Allow: /dehradun-isbt
+Allow: /rajpur-road-mussoorie-road
+Allow: /herbertpur-premnagar
+Allow: /harrawala-doiwala
+Allow: /selaqui-ghanta-ghar
+
+# Public Assets & Static Media
 Allow: /public/
 Allow: /*.css$
 Allow: /*.js$
@@ -30,11 +60,13 @@ Allow: /*.webp$
 Allow: /*.png$
 Allow: /*.jpg$
 Allow: /*.svg$
+
+# LLM & Machine Context Endpoints
 Allow: /llms.txt
 Allow: /llms-full.txt
 Allow: /sitemap.xml
 
-# Disallow administrative and duplicate paths
+# Disallow administrative, internal, and duplicate query paths
 Disallow: /admin/
 Disallow: /private/
 Disallow: /api/
@@ -54,7 +86,7 @@ Allow: /public/
 Allow: /
 
 # ------------------------------------------
-# 3. AI / LLM Semantic Crawlers
+# 3. AI / LLM Semantic Crawlers & Generative Search
 # Explicitly ALLOW to maximize citations in AI Overviews & Generative Search
 # ------------------------------------------
 User-agent: Google-Extended
@@ -92,4 +124,5 @@ Crawl-delay: 2
 # 4. XML Sitemap & AI Knowledge Context Directives
 # ------------------------------------------
 Sitemap: https://www.topcutegirls.org/sitemap.xml
-# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt\n
+# LLM Knowledge Reference: https://www.topcutegirls.org/llms.txt
+# Extended LLM Knowledge Base: https://www.topcutegirls.org/llms-full.txt
