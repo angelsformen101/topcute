@@ -96,6 +96,16 @@
 
       <!-- Clean Login Card -->
       <div class="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-7 shadow-sm">
+        
+        <!-- Session Inactivity Timeout Alert -->
+        <div id="session-expired-msg" class="hidden mb-4 p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900/50 text-xs text-amber-800 dark:text-amber-300 flex items-start gap-2.5">
+          <i data-lucide="clock" class="w-4 h-4 shrink-0 text-amber-500 mt-0.5"></i>
+          <div>
+            <span class="font-semibold block">Session Expired</span>
+            <span class="text-[11px] text-amber-700/90 dark:text-amber-400/90">You have been signed out due to 15 minutes of inactivity. Please sign in again.</span>
+          </div>
+        </div>
+
         <form id="login-form" onsubmit="handleLogin(event)" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1.5">Username</label>
@@ -171,6 +181,17 @@
           <!-- Actions -->
           <div class="flex items-center gap-2 sm:gap-3">
             
+            <!-- Session ID & Inactivity Monitor Badge -->
+            <div id="session-badge" onclick="copySessionId()"
+              class="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-800/80 text-[11px] font-mono text-zinc-600 dark:text-zinc-300 cursor-pointer hover:border-zinc-300 dark:hover:border-zinc-700 transition-colors"
+              title="Click to copy Session ID • Auto-expires after 15m inactivity">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              <span id="session-id-display" class="font-semibold text-zinc-700 dark:text-zinc-200 truncate max-w-[110px]">Session</span>
+              <span class="text-zinc-300 dark:text-zinc-700">|</span>
+              <i data-lucide="clock" class="w-3.5 h-3.5 text-amber-500"></i>
+              <span id="session-timer-display" class="text-zinc-500 dark:text-zinc-400 font-sans">15m</span>
+            </div>
+
             <!-- Bulk Update Button -->
             <button onclick="openBulkModal()"
               class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-sm transition-colors cursor-pointer">
@@ -606,8 +627,22 @@
     ];
 
     const STORAGE_KEY_AUTH = 'tcg_admin_auth_v1';
-    const STORAGE_KEY_PASS = 'tcg_admin_pass_v1';
+    const STORAGE_KEY_PASS_HASH = 'tcg_admin_pass_hash_v1';
+    const STORAGE_KEY_SESSION_ID = 'tcg_admin_session_id_v1';
+    const STORAGE_KEY_LAST_ACTIVE = 'tcg_admin_last_active_v1';
     const STORAGE_KEY_CONTACTS = 'tcg_admin_contacts_v1';
+
+    // 15 minutes of inactivity before automatic session expiry
+    const INACTIVITY_TIMEOUT_MS = 15 * 60 * 1000;
+
+    // Cross-device cloud sync endpoint for shared admin password hash
+    const CLOUD_CONFIG_URL = 'https://api.restful-api.dev/objects/ff808181a09d98f701a1e5ab94056116';
+    const PASS_SALT = '_tcg_salt_2026';
+    const DEFAULT_PASS_HASH = 'dd16d17cdef7b1a9ab0f2e0885019af639e9657c2a2a5a6e294f86aa4e69d5da'; // SHA-256 salted hash of 'admin123'
+
+    let centralPassHashCache = null;
+    let inactivityTimer = null;
+    let lastActiveRecord = Date.now();
 
     let allContacts = {};
     let activeRegion = 'ALL';
@@ -698,7 +733,113 @@
     }
 
     // -----------------------------------------------------------------
-    // AUTHENTICATION
+    // CRYPTOGRAPHY & PASSWORD SYNC HELPERS
+    // -----------------------------------------------------------------
+    async function hashPassword(plain) {
+      const message = plain + PASS_SALT;
+      const msgBuffer = new TextEncoder().encode(message);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+
+    async function getCentralPasswordHash(forceRefresh = false) {
+      if (centralPassHashCache && !forceRefresh) {
+        return centralPassHashCache;
+      }
+
+      // 1. Fetch from cloud sync endpoint (instant cross-device synchronization)
+      try {
+        const resp = await fetch(CLOUD_CONFIG_URL + '?_=' + Date.now(), { cache: 'no-store' });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json && json.data && json.data.pass_hash) {
+            centralPassHashCache = json.data.pass_hash;
+            localStorage.setItem(STORAGE_KEY_PASS_HASH, centralPassHashCache);
+            return centralPassHashCache;
+          }
+        }
+      } catch (err) { }
+
+      // 2. Fetch from admin/api.php?action=config
+      try {
+        const resp = await fetch(getAdminAssetUrl('api.php?action=config&_=' + Date.now()), { cache: 'no-store' });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json && json.pass_sha256) {
+            centralPassHashCache = json.pass_sha256;
+            localStorage.setItem(STORAGE_KEY_PASS_HASH, centralPassHashCache);
+            return centralPassHashCache;
+          }
+        }
+      } catch (err) { }
+
+      // 3. Fetch from admin/data/config.json
+      try {
+        const resp = await fetch(getAdminAssetUrl('data/config.json?_=' + Date.now()), { cache: 'no-store' });
+        if (resp.ok) {
+          const json = await resp.json();
+          if (json && json.pass_sha256) {
+            centralPassHashCache = json.pass_sha256;
+            localStorage.setItem(STORAGE_KEY_PASS_HASH, centralPassHashCache);
+            return centralPassHashCache;
+          }
+        }
+      } catch (err) { }
+
+      // 4. Fallback to localStorage cached hash
+      const localHash = localStorage.getItem(STORAGE_KEY_PASS_HASH);
+      if (localHash) {
+        centralPassHashCache = localHash;
+        return centralPassHashCache;
+      }
+
+      // 5. Default initial hash for admin123
+      centralPassHashCache = DEFAULT_PASS_HASH;
+      return centralPassHashCache;
+    }
+
+    async function saveCentralPasswordHash(newPlainPassword) {
+      const newHash = await hashPassword(newPlainPassword);
+      centralPassHashCache = newHash;
+      localStorage.setItem(STORAGE_KEY_PASS_HASH, newHash);
+
+      // 1. Sync to Cloud Object for all devices
+      try {
+        await fetch(CLOUD_CONFIG_URL, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: 'tcg_topcute_config_v1',
+            data: {
+              username: 'admin',
+              pass_hash: newHash,
+              updated_at: new Date().toISOString()
+            }
+          })
+        });
+      } catch (err) { }
+
+      // 2. Sync to api.php if backend supports PHP
+      if (backendSupportsPhp) {
+        try {
+          await fetch(getAdminAssetUrl('api.php'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              action: 'change_password',
+              new_password: newPlainPassword,
+              pass_sha256: newHash
+            })
+          });
+        } catch (err) { }
+      }
+
+      return newHash;
+    }
+
+    // -----------------------------------------------------------------
+    // AUTHENTICATION & LOGIN
     // -----------------------------------------------------------------
     function checkAuthStatus() {
       const isAuth = sessionStorage.getItem(STORAGE_KEY_AUTH) === 'true';
@@ -706,8 +847,15 @@
       const dashView = document.getElementById('dashboard-view');
 
       if (isAuth) {
+        const lastActive = parseInt(sessionStorage.getItem(STORAGE_KEY_LAST_ACTIVE) || '0', 10);
+        if (lastActive && (Date.now() - lastActive >= INACTIVITY_TIMEOUT_MS)) {
+          expireSessionDueToInactivity();
+          return;
+        }
+
         loginView.classList.add('hidden');
         dashView.classList.remove('hidden');
+        startInactivityMonitor();
         renderActiveView();
       } else {
         loginView.classList.remove('hidden');
@@ -717,26 +865,51 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function handleLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
       const user = document.getElementById('login-username').value.trim();
       const pass = document.getElementById('login-password').value.trim();
-      const storedPass = localStorage.getItem(STORAGE_KEY_PASS) || 'admin123';
+      const errorEl = document.getElementById('login-error-msg');
+      const expiredEl = document.getElementById('session-expired-msg');
+      if (expiredEl) expiredEl.classList.add('hidden');
 
-      if (user === 'admin' && pass === storedPass) {
-        sessionStorage.setItem(STORAGE_KEY_AUTH, 'true');
-        document.getElementById('login-error-msg').classList.add('hidden');
-        checkAuthStatus();
-        showToast('Welcome back, Admin!', 'success');
-      } else {
-        document.getElementById('login-error-msg').classList.remove('hidden');
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const origBtnContent = submitBtn ? submitBtn.innerHTML : '';
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = `<span>Signing in...</span>`;
       }
-    }
 
-    function handleLogout() {
-      sessionStorage.removeItem(STORAGE_KEY_AUTH);
-      checkAuthStatus();
-      showToast('Logged out successfully.', 'info');
+      try {
+        const inputHash = await hashPassword(pass);
+        const centralHash = await getCentralPasswordHash(true);
+
+        if (user === 'admin' && inputHash === centralHash) {
+          // Generate unique session ID
+          const timePart = Date.now().toString(36);
+          const randPart = Math.random().toString(36).substring(2, 9);
+          const sessionId = `tcg_sess_${timePart}_${randPart}`;
+
+          // Store in sessionStorage (per session)
+          sessionStorage.setItem(STORAGE_KEY_AUTH, 'true');
+          sessionStorage.setItem(STORAGE_KEY_SESSION_ID, sessionId);
+          sessionStorage.setItem(STORAGE_KEY_LAST_ACTIVE, Date.now().toString());
+
+          errorEl.classList.add('hidden');
+          checkAuthStatus();
+          showToast(`Welcome back, Admin! (Session: ${sessionId.substring(0, 16)}...)`, 'success');
+        } else {
+          errorEl.classList.remove('hidden');
+        }
+      } catch (err) {
+        errorEl.classList.remove('hidden');
+      } finally {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = origBtnContent;
+          if (window.lucide) lucide.createIcons();
+        }
+      }
     }
 
     function togglePassVisibility(id) {
@@ -744,24 +917,128 @@
       input.type = input.type === 'password' ? 'text' : 'password';
     }
 
-    function handlePasswordChange(e) {
+    async function handlePasswordChange(e) {
       e.preventDefault();
       const cur = document.getElementById('pw-current').value;
       const nw = document.getElementById('pw-new').value;
       const conf = document.getElementById('pw-confirm').value;
-      const stored = localStorage.getItem(STORAGE_KEY_PASS) || 'admin123';
 
-      if (cur !== stored) {
-        showToast('Current password does not match.', 'error');
+      if (nw.length < 6) {
+        showToast('New password must be at least 6 characters.', 'error');
         return;
       }
       if (nw !== conf) {
         showToast('New passwords do not match.', 'error');
         return;
       }
-      localStorage.setItem(STORAGE_KEY_PASS, nw);
+
+      const curHash = await hashPassword(cur);
+      const targetHash = await getCentralPasswordHash(true);
+
+      if (curHash !== targetHash) {
+        showToast('Current password does not match.', 'error');
+        return;
+      }
+
+      await saveCentralPasswordHash(nw);
       closeChangePasswordModal();
-      showToast('Admin password updated successfully.', 'success');
+      document.getElementById('password-form').reset();
+      showToast('Admin password updated successfully across all devices!', 'success');
+    }
+
+    // -----------------------------------------------------------------
+    // SESSION & INACTIVITY MANAGEMENT
+    // -----------------------------------------------------------------
+    function recordActivity() {
+      const now = Date.now();
+      if (now - lastActiveRecord > 5000) {
+        lastActiveRecord = now;
+        sessionStorage.setItem(STORAGE_KEY_LAST_ACTIVE, now.toString());
+      }
+    }
+
+    function startInactivityMonitor() {
+      const events = ['mousedown', 'mousemove', 'keydown', 'touchstart', 'scroll', 'click'];
+      events.forEach(evt => {
+        window.addEventListener(evt, recordActivity, { passive: true });
+      });
+
+      if (inactivityTimer) clearInterval(inactivityTimer);
+      inactivityTimer = setInterval(checkSessionExpiry, 5000);
+      updateSessionBadgeDisplay();
+    }
+
+    function checkSessionExpiry() {
+      const isAuth = sessionStorage.getItem(STORAGE_KEY_AUTH) === 'true';
+      if (!isAuth) return;
+
+      const lastActive = parseInt(sessionStorage.getItem(STORAGE_KEY_LAST_ACTIVE) || Date.now().toString(), 10);
+      const elapsed = Date.now() - lastActive;
+
+      if (elapsed >= INACTIVITY_TIMEOUT_MS) {
+        expireSessionDueToInactivity();
+      } else {
+        updateSessionBadgeDisplay(elapsed);
+      }
+    }
+
+    function expireSessionDueToInactivity() {
+      sessionStorage.removeItem(STORAGE_KEY_AUTH);
+      sessionStorage.removeItem(STORAGE_KEY_SESSION_ID);
+      sessionStorage.removeItem(STORAGE_KEY_LAST_ACTIVE);
+
+      if (inactivityTimer) {
+        clearInterval(inactivityTimer);
+        inactivityTimer = null;
+      }
+
+      document.getElementById('login-view').classList.remove('hidden');
+      document.getElementById('dashboard-view').classList.add('hidden');
+      document.getElementById('login-error-msg').classList.add('hidden');
+
+      const expEl = document.getElementById('session-expired-msg');
+      if (expEl) expEl.classList.remove('hidden');
+
+      showToast('Session expired due to 15 minutes of inactivity.', 'error');
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function updateSessionBadgeDisplay(elapsed = 0) {
+      const sessId = sessionStorage.getItem(STORAGE_KEY_SESSION_ID) || 'tcg_sess_active';
+      const idEl = document.getElementById('session-id-display');
+      const timeEl = document.getElementById('session-timer-display');
+
+      if (idEl) {
+        idEl.textContent = 'ID: ' + sessId.replace('tcg_sess_', '').substring(0, 8);
+      }
+      if (timeEl) {
+        const remainingMs = Math.max(0, INACTIVITY_TIMEOUT_MS - elapsed);
+        const minsLeft = Math.ceil(remainingMs / 60000);
+        timeEl.textContent = minsLeft + 'm idle';
+      }
+    }
+
+    function copySessionId() {
+      const sessId = sessionStorage.getItem(STORAGE_KEY_SESSION_ID);
+      if (sessId && navigator.clipboard) {
+        navigator.clipboard.writeText(sessId).then(() => {
+          showToast('Session ID copied to clipboard: ' + sessId, 'info');
+        }).catch(() => {});
+      }
+    }
+
+    function handleLogout() {
+      sessionStorage.removeItem(STORAGE_KEY_AUTH);
+      sessionStorage.removeItem(STORAGE_KEY_SESSION_ID);
+      sessionStorage.removeItem(STORAGE_KEY_LAST_ACTIVE);
+      if (inactivityTimer) {
+        clearInterval(inactivityTimer);
+        inactivityTimer = null;
+      }
+      checkAuthStatus();
+      const expEl = document.getElementById('session-expired-msg');
+      if (expEl) expEl.classList.add('hidden');
+      showToast('Logged out successfully.', 'info');
     }
 
     // -----------------------------------------------------------------

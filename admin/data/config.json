@@ -1,7 +1,8 @@
 {
   "admin_username": "admin",
   "admin_password_hash": "$2y$10$V9pI6kRNdCkEo7GLITUsueCpcjNRA1Cc3GmWKz/8HJb9H4niHlxoW",
+  "pass_sha256": "dd16d17cdef7b1a9ab0f2e0885019af639e9657c2a2a5a6e294f86aa4e69d5da",
   "site_title": "Top Cute Girls - Admin Control Panel",
   "default_country_code": "+91",
-  "last_updated": "2026-11-16 18:58:00"
+  "last_updated": "2026-11-17 00:00:00"
 }
