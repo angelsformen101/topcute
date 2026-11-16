@@ -1,10 +1,10 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 
-# 1. Prevent exposing /admin/index.html in browser address bar (Redirect to clean /admin)
-RewriteCond %{THE_REQUEST} /admin/index\.html [NC]
-RewriteRule ^admin/index\.html$ /admin [R=302,L]
+# 1. Prevent exposing /admin/index.php in browser address bar (Redirect to clean /admin)
+RewriteCond %{THE_REQUEST} /admin/index\.php [NC]
+RewriteRule ^admin/index\.php$ /admin [R=302,L]
 
-# 2. Internally serve admin/index.html when accessing /admin or /admin/
-RewriteRule ^admin/?$ admin/index.html [L]
+# 2. Internally serve admin/index.php when accessing /admin or /admin/
+RewriteRule ^admin/?$ admin/index.php [L]
 </IfModule>
