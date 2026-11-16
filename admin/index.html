@@ -666,8 +666,36 @@
       initTheme();
       checkAuthStatus();
       loadData();
+      checkBackendSupport();
       if (window.lucide) lucide.createIcons();
     });
+
+    // -----------------------------------------------------------------
+    // BACKEND API & DATA PERSISTENCE
+    // -----------------------------------------------------------------
+    function getAdminAssetUrl(relativePath) {
+      const cleanRel = relativePath.replace(/^\.?\//, '');
+      const path = window.location.pathname;
+      if (path.includes('/admin')) {
+        const idx = path.indexOf('/admin');
+        return path.substring(0, idx + 6).replace(/\/$/, '') + '/' + cleanRel;
+      }
+      return '/admin/' + cleanRel;
+    }
+
+    let backendSupportsPhp = false;
+
+    async function checkBackendSupport() {
+      try {
+        const resp = await fetch(getAdminAssetUrl('api.php'), { method: 'HEAD' });
+        const contentType = resp.headers.get('content-type') || '';
+        if (resp.ok && contentType.includes('application/json')) {
+          backendSupportsPhp = true;
+        }
+      } catch (e) {
+        backendSupportsPhp = false;
+      }
+    }
 
     // -----------------------------------------------------------------
     // AUTHENTICATION
@@ -740,9 +768,23 @@
     // DATA LOADING & SYNC
     // -----------------------------------------------------------------
     async function loadData() {
-      // 1. Try fetching from server api.php / contacts.json
+      // 1. Try localStorage first (retains admin's live customizations)
+      const cached = localStorage.getItem(STORAGE_KEY_CONTACTS);
+      if (cached) {
+        try {
+          const parsed = JSON.parse(cached);
+          if (parsed && typeof parsed === 'object' && Object.keys(parsed).length > 0) {
+            allContacts = parsed;
+            renderActiveView();
+            return;
+          }
+        } catch (e) { }
+      }
+
+      // 2. Fetch default dataset from /admin/data/contacts.json
       try {
-        const resp = await fetch('./api.php');
+        const jsonUrl = getAdminAssetUrl('data/contacts.json');
+        const resp = await fetch(jsonUrl);
         if (resp.ok) {
           const data = await resp.json();
           if (data && typeof data === 'object' && Object.keys(data).length > 0) {
@@ -754,16 +796,6 @@
         }
       } catch (e) { }
 
-      // 2. Try localStorage
-      const cached = localStorage.getItem(STORAGE_KEY_CONTACTS);
-      if (cached) {
-        try {
-          allContacts = JSON.parse(cached);
-          renderActiveView();
-          return;
-        } catch (e) { }
-      }
-
       // 3. Fallback default contacts dataset (30 total: 15 active + 15 untouched)
       allContacts = getDefaultContacts();
       localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(allContacts));
@@ -771,14 +803,19 @@
     }
 
     async function syncDataToServer() {
+      // Always persist in localStorage for instant client-side synchronization
       localStorage.setItem(STORAGE_KEY_CONTACTS, JSON.stringify(allContacts));
-      try {
-        await fetch('./api.php', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action: 'sync_all', data: allContacts })
-        });
-      } catch (e) { }
+
+      // Synchronize with server-side api.php only if supported by backend
+      if (backendSupportsPhp) {
+        try {
+          await fetch(getAdminAssetUrl('api.php'), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ action: 'sync_all', data: allContacts })
+          });
+        } catch (e) { }
+      }
     }
 
     // -----------------------------------------------------------------

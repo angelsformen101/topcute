@@ -4,6 +4,11 @@
   "trailingSlash": false,
   "redirects": [
     {
+      "source": "/api.php",
+      "destination": "/admin/api.php",
+      "permanent": false
+    },
+    {
       "source": "/admin/index.html",
       "destination": "/admin",
       "permanent": false
